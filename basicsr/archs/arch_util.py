@@ -192,13 +192,18 @@ def pixel_unshuffle(x, scale):
     Returns:
         Tensor: the pixel unshuffled feature.
     """
-    b, c, hh, hw = x.size()
+    # not enough values to unpack (expected 4, got 3)
+    if len(x.size()) == 3:
+        b, hh, hw = x.size()
+        c = 1
+    if len(x.size()) == 4:
+        b, c, hh, hw = x.size()
     out_channel = c * (scale**2)
     assert hh % scale == 0 and hw % scale == 0
     h = hh // scale
     w = hw // scale
     x_view = x.view(b, c, h, scale, w, scale)
-    return x_view.permute(0, 1, 3, 5, 2, 4).reshape(b, out_channel, h, w)
+    return x_view.permute(0, 1, 3, 5, 2, 4).reshape(b, out_channel, h, w) #abcdef - abecfd
 
 
 class DCNv2Pack(ModulatedDeformConvPack):

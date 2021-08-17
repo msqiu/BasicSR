@@ -10,8 +10,8 @@ datasets:
   train:
     name: RT_Train
     type: PairedImageDataset
-    dataroot_gt: datasets/rt/train_rgb
-    dataroot_lq: datasets/rt/train_lr - uint8
+    dataroot_gt: datasets/rt_uint8/train_hr_uint8
+    dataroot_lq: datasets/rt_uint8/train_lr_uint8
     # (for lmdb)
     # dataroot_gt: datasets/DIV2K/DIV2K_train_HR_sub.lmdb
     # dataroot_lq: datasets/DIV2K/DIV2K_train_LR_bicubic_X4_sub.lmdb
@@ -21,7 +21,7 @@ datasets:
       # (for lmdb)
       # type: lmdb
 
-    gt_size: 128
+    gt_size: 128 #128
     use_flip: false
     use_rot: false
 
@@ -29,7 +29,7 @@ datasets:
     use_shuffle: true
     num_worker_per_gpu: 1 #6
     batch_size_per_gpu: 1 #16
-    dataset_enlarge_ratio: 50 # 100
+    dataset_enlarge_ratio: 100 # 100
     # prefetch_mode: ~
     prefetch_mode: cuda
     pin_memory: true
@@ -37,8 +37,8 @@ datasets:
   val:
     name: RT_Val
     type: PairedImageDataset
-    dataroot_gt: datasets/rt/val_rgb
-    dataroot_lq: datasets/rt/val_lr - uint8
+    dataroot_gt: datasets/rt_uint8/val_hr_uint8
+    dataroot_lq: datasets/rt_uint8/val_lr_uint8
     io_backend:
       type: disk
 

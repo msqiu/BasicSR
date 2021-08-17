@@ -3,7 +3,7 @@ from torchvision.transforms.functional import normalize
 
 from basicsr.data.data_util import paired_paths_from_folder, paired_paths_from_lmdb, paired_paths_from_meta_info_file
 from basicsr.data.transforms import augment, paired_random_crop
-from basicsr.utils import FileClient, imfrombytes, img2tensor
+from basicsr.utils import FileClient, imfrombytes, img2tensor, sinimg2tensor
 from basicsr.utils.registry import DATASET_REGISTRY
 
 
@@ -74,10 +74,11 @@ class PairedImageDataset(data.Dataset):
         # image range: [0, 1], float32.
         gt_path = self.paths[index]['gt_path']
         img_bytes = self.file_client.get(gt_path, 'gt')
-        img_gt = imfrombytes(img_bytes, float32=True)
+        img_gt = imfrombytes(img_bytes, flag='color', float32=True)
         lq_path = self.paths[index]['lq_path']
         img_bytes = self.file_client.get(lq_path, 'lq')
-        img_lq = imfrombytes(img_bytes, float32=True)
+        img_lq = imfrombytes(img_bytes, flag='color', float32=True)
+        # img_lq = imfrombytes(img_bytes, flag='color', float32=True)
 
         # augmentation for training
         if self.opt['phase'] == 'train':
@@ -90,6 +91,8 @@ class PairedImageDataset(data.Dataset):
         # TODO: color space transform
         # BGR to RGB, HWC to CHW, numpy to tensor
         img_gt, img_lq = img2tensor([img_gt, img_lq], bgr2rgb=True, float32=True)
+        # img_gt = sinimg2tensor(img_gt, float32=True)
+        # img_lq = sinimg2tensor(img_lq, float32=True)
         # normalize
         if self.mean is not None or self.std is not None:
             normalize(img_lq, self.mean, self.std, inplace=True)
